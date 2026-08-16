@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# Original high-resolution media is kept locally; the site uses optimized copies.
+public/toileport.mp4
+public/ocean-scene.mp4
+public/ancient-island.mp4
+public/devil-mask.png
+public/monster-design.png
+public/sleeping-patrick.png
+public/research-01.jpg
+public/research-02.jpg
+public/research-03.jpg
+

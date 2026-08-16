@@ -1,0 +1,7 @@
+.stroke-text{display:block;width:100%;line-height:0}
+.stroke-text--hover{cursor:pointer}
+.stroke-text__svg{display:block;width:100%;height:var(--stroke-text-height,160px);overflow:visible}
+.stroke-text__stroke,.stroke-text__fill{user-select:none;shape-rendering:geometricPrecision;text-rendering:geometricPrecision}
+.stroke-text__stroke{paint-order:stroke;transform:translateZ(0)}
+.hero-stroke-text{height:1em;isolation:isolate;backface-visibility:hidden}
+.hero-stroke-text .stroke-text__svg{height:1em}
