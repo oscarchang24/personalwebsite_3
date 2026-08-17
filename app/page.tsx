@@ -267,8 +267,9 @@ export default function Home() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let visible = false;
     let hasStarted = false;
-    let retryOnCanPlay = false;
     let recoveryFrame = 0;
+    let pendingStart: number | null = null;
+    let playbackToken = 0;
     const minimumStart = 7;
     const maximumEnd = 245;
     const segmentLength = 15;
@@ -278,54 +279,69 @@ export default function Home() {
       const overlap = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
       return overlap / Math.max(1, Math.min(rect.height, window.innerHeight)) >= 0.35;
     };
-    const playSegment = (first = false) => {
-      if (!visible || document.hidden) return;
+    const chooseStart = (first: boolean) => {
       const playbackEnd = Math.min(Number.isFinite(video.duration) ? video.duration : maximumEnd, maximumEnd);
       const latestStart = Math.max(minimumStart, playbackEnd - segmentLength);
-      const randomStart = minimumStart + Math.random() * Math.max(0, latestStart - minimumStart);
-      video.currentTime = first ? Math.min(Math.max(32, minimumStart), latestStart) : randomStart;
-      hasStarted = true;
-      const startPlayback = () => void video.play().catch(() => {
-        if (!retryOnCanPlay) {
-          retryOnCanPlay = true;
-          video.addEventListener("canplay", recoverPlayback, { once: true });
+      if (first) return Math.min(Math.max(32, minimumStart), latestStart);
+      return minimumStart + Math.random() * Math.max(0, latestStart - minimumStart);
+    };
+    const startAtPendingPosition = async (token: number) => {
+      if (token !== playbackToken || pendingStart === null || !visible || document.hidden) return;
+      const target = pendingStart;
+      if (Math.abs(video.currentTime - target) > 0.2) {
+        video.currentTime = target;
+        return;
+      }
+      try {
+        await video.play();
+        if (token !== playbackToken || !visible || document.hidden) {
+          video.pause();
+          return;
         }
-      });
-      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) startPlayback();
-      else video.addEventListener("canplay", startPlayback, { once: true });
+        pendingStart = null;
+        clearTimer();
+        timer = setTimeout(() => playSegment(false), segmentLength * 1000);
+      } catch {
+        // Autoplay can be temporarily interrupted while a remote range request
+        // is still resolving. `canplay` and `pageshow` will retry safely.
+      }
+    };
+    const playSegment = (first = false) => {
+      if (!visible || document.hidden) return;
       clearTimer();
-      timer = setTimeout(() => playSegment(false), segmentLength * 1000);
+      const token = ++playbackToken;
+      if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+        if (video.networkState === HTMLMediaElement.NETWORK_EMPTY || video.error) video.load();
+        return;
+      }
+      pendingStart = chooseStart(first);
+      hasStarted = true;
+      video.currentTime = pendingStart;
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) void startAtPendingPosition(token);
     };
     const recoverPlayback = () => {
-      retryOnCanPlay = false;
       visible = sectionIsVisible();
       if (!visible || document.hidden) return;
-      playSegment(!hasStarted);
+      if (pendingStart !== null) void startAtPendingPosition(playbackToken);
+      else playSegment(!hasStarted);
     };
     const syncPlayback = () => {
       visible = sectionIsVisible();
-      if (!visible || document.hidden) { clearTimer(); video.pause(); return; }
+      if (!visible || document.hidden) { clearTimer(); playbackToken += 1; video.pause(); return; }
       // `preload="none"` keeps the large film out of the initial page load. Once
       // the section is visible we must explicitly start fetching it; otherwise
       // Chromium can remain at HAVE_NOTHING and never emit `canplay`.
-      if (
-        video.readyState === HTMLMediaElement.HAVE_NOTHING ||
-        video.error ||
-        video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE
-      ) video.load();
+      if (video.error || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) video.load();
       if (video.readyState >= HTMLMediaElement.HAVE_METADATA) playSegment(!hasStarted);
-      else if (!retryOnCanPlay) {
-        retryOnCanPlay = true;
-        video.addEventListener("canplay", recoverPlayback, { once: true });
-      }
+      else if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) video.load();
     };
-    const pausePlayback = () => { clearTimer(); video.pause(); };
+    const pausePlayback = () => { clearTimer(); playbackToken += 1; video.pause(); };
     const recoverFromStall = () => {
       if (!visible || document.hidden || recoveryFrame) return;
       recoveryFrame = window.requestAnimationFrame(() => {
         recoveryFrame = 0;
         if (video.error || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) video.load();
-        if (video.currentTime < minimumStart || video.currentTime >= maximumEnd) video.currentTime = 32;
+        if (video.currentTime < minimumStart || video.currentTime >= maximumEnd) pendingStart = 32;
         recoverPlayback();
       });
     };
@@ -345,6 +361,9 @@ export default function Home() {
     video.addEventListener("stalled", recoverFromStall);
     video.addEventListener("error", recoverFromStall);
     video.addEventListener("emptied", recoverFromStall);
+    video.addEventListener("loadedmetadata", recoverPlayback);
+    video.addEventListener("canplay", recoverPlayback);
+    video.addEventListener("seeked", recoverPlayback);
     video.addEventListener("timeupdate", enforcePlaybackRange);
     return () => {
       observer.disconnect();
@@ -354,10 +373,12 @@ export default function Home() {
       window.removeEventListener("focus", syncPlayback);
       window.removeEventListener("pageshow", syncPlayback);
       window.removeEventListener("blur", pausePlayback);
-      video.removeEventListener("canplay", recoverPlayback);
       video.removeEventListener("stalled", recoverFromStall);
       video.removeEventListener("error", recoverFromStall);
       video.removeEventListener("emptied", recoverFromStall);
+      video.removeEventListener("loadedmetadata", recoverPlayback);
+      video.removeEventListener("canplay", recoverPlayback);
+      video.removeEventListener("seeked", recoverPlayback);
       video.removeEventListener("timeupdate", enforcePlaybackRange);
       if (recoveryFrame) window.cancelAnimationFrame(recoveryFrame);
     };
@@ -439,7 +460,7 @@ export default function Home() {
       <section className="toileport section" id="toileport" ref={toileportSectionRef}>
         <div className="shell"><header className="section-head"><p>{copy.animationLabel}</p><span>{copy.animationMeta}</span></header></div>
         <article className="toileport-feature">
-          <video ref={toileportVideoRef} src="/toileport-optimized.mp4" muted playsInline preload="none" aria-label="Toileport 2D animation film" />
+          <video ref={toileportVideoRef} src="/toileport-optimized.mp4" muted playsInline preload="metadata" aria-label="Toileport 2D animation film" />
           <div className="toileport-shade" />
           <div className="toileport-copy"><span>01</span><i /><h2>TOILEPORT</h2><p>{copy.film}</p><a href="https://youtu.be/ZTf7t5y_5bo?si=DvWE90i77SPdCHfP" target="_blank" rel="noopener noreferrer">{copy.watch} <b>→</b></a></div>
           <div className="toileport-label">2D ANIMATION / VISUAL STORYTELLING</div>
