@@ -31,6 +31,8 @@ Upload all files in this package to a GitHub repository. The simplest deployment
 
 The refreshed `package-lock.json` is synchronized with `package.json` and has
 been verified with the same clean-install workflow used by Cloudflare Pages.
+Linux-specific Emscripten runtime packages required by Vite 8/Rolldown are
+explicitly locked so Cloudflare's Linux build does not reject `npm ci`.
 No Wrangler configuration file is required for this static portfolio.
 
 The package contains only the optimized WebP images and optimized MP4 videos used by the live site. Original high-resolution media is intentionally excluded to keep the repository compact.
