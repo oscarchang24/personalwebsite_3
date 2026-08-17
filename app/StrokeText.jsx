@@ -110,7 +110,7 @@ export default function StrokeText({
   return <span ref={rootRef} className={`stroke-text ${trigger === "hover" ? "stroke-text--hover" : ""} ${className}`.trim()} style={{ ...style, "--stroke-text-height": `${Math.round(Number(fontSize) * 1.3)}px` }} role="img" aria-label={String(text ?? "")}>
     <svg className="stroke-text__svg" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {fillMode === "wipe" && box && <defs><clipPath id={wipeId} clipPathUnits="userSpaceOnUse"><rect ref={wipeRectRef} x={box.x} y={box.y} width="0" height={box.height} /></clipPath></defs>}
-      <text ref={strokeTextRef} className="stroke-text__stroke" x="0" y="0" fill="none" stroke={strokeColor} strokeWidth={strokeWidth} strokeLinejoin="miter" strokeLinecap="butt" strokeMiterlimit="2" style={fontStyle}>{characters.map((character, index) => <tspan data-stroke-char key={`s-${index}`}>{character}</tspan>)}</text>
+      <text ref={strokeTextRef} className="stroke-text__stroke" x="0" y="0" fill="none" stroke={strokeColor} strokeWidth={strokeWidth} strokeLinejoin="round" strokeLinecap="round" strokeMiterlimit="1" style={fontStyle}>{characters.map((character, index) => <tspan data-stroke-char key={`s-${index}`}>{character}</tspan>)}</text>
       <text className="stroke-text__fill" x="0" y="0" fill={fillColor} stroke="none" style={fontStyle} clipPath={fillMode === "wipe" && box ? `url(#${wipeId})` : undefined}>{characters.map((character, index) => <tspan data-fill-char key={`f-${index}`}>{character}</tspan>)}</text>
     </svg>
   </span>;

@@ -5,6 +5,12 @@ html,body,main{background:#050506;color:var(--paper)}
 .work .section-head{border-color:var(--line);color:#c9cbc7}.work .section-head span{color:#717570}
 .work .display-title{color:#f3f3ef}.work .display-title em{color:var(--acid)}
 .gallery-hint{color:#8a8e88}.gallery-hint b{color:var(--acid)}
+.gallery-controls{display:flex;align-items:center;gap:8px}
+.gallery-controls button{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:0;background:transparent;color:var(--acid);font:700 17px/1 Arial,sans-serif;cursor:pointer;transition:color .22s ease,transform .22s ease,text-shadow .22s ease}
+.gallery-controls button:hover{background:transparent;color:#e0ff72;text-shadow:0 0 12px rgba(205,255,66,.55);transform:translateX(2px)}
+.gallery-controls button:first-child:hover{transform:translateX(-2px)}
+.gallery-controls button:active{transform:scale(.94)}
+.gallery-controls button:focus-visible{outline:2px solid var(--acid);outline-offset:3px}
 .gallery-card h3{color:#f3f3ef}.gallery-image{background:#0c1012}
 .contact{background:radial-gradient(circle at 60% 44%,#101a20,#050506 48%,#030304 76%)}
 
@@ -38,3 +44,13 @@ html,body,main{background:#050506;color:var(--paper)}
 .gallery-card:nth-child(-n+3) .gallery-image img{object-fit:contain;background:#090708}
 .gallery-image .gallery-video{width:100%;height:100%;display:block;object-fit:cover;background:#050607;filter:saturate(.78) contrast(1.06);transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .4s}.gallery-card:hover .gallery-video{transform:scale(1.035);filter:saturate(1) contrast(1.04)}
 .gallery-image:after{z-index:1;pointer-events:none;background:linear-gradient(180deg,#050607 0%,rgba(5,6,7,.92) 7%,rgba(5,6,7,.45) 17%,transparent 29%,transparent 69%,rgba(5,6,7,.42) 82%,rgba(5,6,7,.92) 94%,#050607 100%)}
+.gallery-explore{color:#f3f3ef;border-color:rgba(255,255,255,.25)}
+.gallery-explore:hover{color:var(--acid);border-color:var(--acid)}
+.gallery-card-footer{display:flex;flex-direction:column}
+.gallery-card-footer .gallery-explore{position:relative;right:auto;top:auto;align-self:flex-end;width:min(190px,70%);margin-top:16px;opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:color .22s ease,border-color .22s ease,transform .22s ease}
+.gallery-card-footer .gallery-explore:hover{transform:translateX(3px)}
+.gallery-wrap{position:relative}
+.gallery-explore-overlay{position:absolute;z-index:8;right:max(6vw,48px);bottom:26px;width:min(190px,22vw);display:flex;align-items:center;justify-content:space-between;padding:0 0 10px;border-bottom:1px solid rgba(255,255,255,.28);font:900 10px/1 Arial,sans-serif;letter-spacing:.11em;color:#f3f3ef;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .32s ease,transform .32s ease,visibility .32s,color .22s ease,border-color .22s ease}
+.gallery-explore-overlay.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.gallery-explore-overlay b{font-size:15px;color:var(--acid)}
+.gallery-explore-overlay:hover{color:var(--acid);border-color:var(--acid);transform:translateX(3px)}

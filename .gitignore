@@ -3,6 +3,7 @@ dist/
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
+.local-media-archive/
 
 # Original high-resolution media is kept locally; the site uses optimized copies.
 public/toileport.mp4

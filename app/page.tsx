@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import StrokeText from "./StrokeText";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+
+const StrokeText = lazy(() => import("./StrokeText"));
 
 const projects = [
   {
@@ -86,6 +87,7 @@ export default function Home() {
   const [navFloating, setNavFloating] = useState(false);
   const [language, setLanguage] = useState<"en" | "zh" | "ko">("en");
   const [introFinished, setIntroFinished] = useState(false);
+  const [showGalleryExplore, setShowGalleryExplore] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
   const toileportSectionRef = useRef<HTMLElement>(null);
   const toileportVideoRef = useRef<HTMLVideoElement>(null);
@@ -231,6 +233,33 @@ export default function Home() {
     drag.current.active = false;
     galleryRef.current?.classList.remove("is-dragging");
   };
+  const moveGalleryByCard = (direction: -1 | 1) => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+    const cards = gallery.querySelectorAll<HTMLElement>(".gallery-card");
+    if (!cards.length) return;
+    const cardStep = cards.length > 1
+      ? cards[1].offsetLeft - cards[0].offsetLeft
+      : cards[0].offsetWidth;
+    gallery.scrollBy({ left: direction * cardStep, behavior: "smooth" });
+  };
+  const updateGalleryExplore = () => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+    const oceanCard = gallery.querySelector<HTMLElement>(".gallery-card:nth-child(4)");
+    if (!oceanCard) return;
+    const galleryRect = gallery.getBoundingClientRect();
+    const cardRect = oceanCard.getBoundingClientRect();
+    setShowGalleryExplore(cardRect.right > galleryRect.left && cardRect.left < galleryRect.right);
+  };
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(updateGalleryExplore);
+    window.addEventListener("resize", updateGalleryExplore, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateGalleryExplore);
+    };
+  }, []);
   useEffect(() => {
     const section = toileportSectionRef.current;
     const video = toileportVideoRef.current;
@@ -239,6 +268,10 @@ export default function Home() {
     let visible = false;
     let hasStarted = false;
     let retryOnCanPlay = false;
+    let recoveryFrame = 0;
+    const minimumStart = 7;
+    const maximumEnd = 245;
+    const segmentLength = 15;
     const clearTimer = () => { if (timer) clearTimeout(timer); timer = undefined; };
     const sectionIsVisible = () => {
       const rect = section.getBoundingClientRect();
@@ -247,18 +280,21 @@ export default function Home() {
     };
     const playSegment = (first = false) => {
       if (!visible || document.hidden) return;
-      const playbackEnd = Math.min(Number.isFinite(video.duration) ? video.duration : 245, 245);
-      const latestStart = Math.max(0, playbackEnd - 15);
-      video.currentTime = first ? Math.min(32, latestStart) : Math.random() * latestStart;
+      const playbackEnd = Math.min(Number.isFinite(video.duration) ? video.duration : maximumEnd, maximumEnd);
+      const latestStart = Math.max(minimumStart, playbackEnd - segmentLength);
+      const randomStart = minimumStart + Math.random() * Math.max(0, latestStart - minimumStart);
+      video.currentTime = first ? Math.min(Math.max(32, minimumStart), latestStart) : randomStart;
       hasStarted = true;
-      void video.play().catch(() => {
+      const startPlayback = () => void video.play().catch(() => {
         if (!retryOnCanPlay) {
           retryOnCanPlay = true;
           video.addEventListener("canplay", recoverPlayback, { once: true });
         }
       });
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) startPlayback();
+      else video.addEventListener("canplay", startPlayback, { once: true });
       clearTimer();
-      timer = setTimeout(() => playSegment(false), 15000);
+      timer = setTimeout(() => playSegment(false), segmentLength * 1000);
     };
     const recoverPlayback = () => {
       retryOnCanPlay = false;
@@ -284,6 +320,18 @@ export default function Home() {
       }
     };
     const pausePlayback = () => { clearTimer(); video.pause(); };
+    const recoverFromStall = () => {
+      if (!visible || document.hidden || recoveryFrame) return;
+      recoveryFrame = window.requestAnimationFrame(() => {
+        recoveryFrame = 0;
+        if (video.error || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) video.load();
+        if (video.currentTime < minimumStart || video.currentTime >= maximumEnd) video.currentTime = 32;
+        recoverPlayback();
+      });
+    };
+    const enforcePlaybackRange = () => {
+      if (video.currentTime < minimumStart || video.currentTime >= maximumEnd) playSegment(false);
+    };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting && entry.intersectionRatio >= 0.35;
       if (!visible) { clearTimer(); video.pause(); hasStarted = false; return; }
@@ -294,6 +342,10 @@ export default function Home() {
     window.addEventListener("focus", syncPlayback);
     window.addEventListener("pageshow", syncPlayback);
     window.addEventListener("blur", pausePlayback);
+    video.addEventListener("stalled", recoverFromStall);
+    video.addEventListener("error", recoverFromStall);
+    video.addEventListener("emptied", recoverFromStall);
+    video.addEventListener("timeupdate", enforcePlaybackRange);
     return () => {
       observer.disconnect();
       clearTimer();
@@ -303,6 +355,11 @@ export default function Home() {
       window.removeEventListener("pageshow", syncPlayback);
       window.removeEventListener("blur", pausePlayback);
       video.removeEventListener("canplay", recoverPlayback);
+      video.removeEventListener("stalled", recoverFromStall);
+      video.removeEventListener("error", recoverFromStall);
+      video.removeEventListener("emptied", recoverFromStall);
+      video.removeEventListener("timeupdate", enforcePlaybackRange);
+      if (recoveryFrame) window.cancelAnimationFrame(recoveryFrame);
     };
   }, []);
   return (
@@ -315,7 +372,7 @@ export default function Home() {
       </div>}
       <nav className={`floating-nav${navFloating ? " is-visible" : ""}`} aria-hidden={!navFloating}>
         <a className="brand" href="#top">OSCAR CHANG</a>
-        <div className="hero-nav-links"><a href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#work">WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
+        <div className="hero-nav-links"><a href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
         {languageSwitch()}
       </nav>
       <section className="hero" id="top">
@@ -325,11 +382,11 @@ export default function Home() {
         <div className="hero-noise" />
         <nav className="nav hero-shell">
           <a className="brand" href="#top">OSCAR CHANG</a>
-          <div className="hero-nav-links"><a className="active" href="#top">HOME</a><a href="#about">ABOUT</a><a href="#work">WORK</a><a href="#contact">CONTACT</a></div>
+          <div className="hero-nav-links"><a className="active" href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
           {languageSwitch()}
         </nav>
         <div className="hero-content hero-shell">
-          <h1><span>HI! IM OSCAR CHANG</span><strong>{introFinished && <StrokeText key="hero-stroke-ready" className="hero-stroke-text" text="LETS BUILD A PLAYABLE WORLD" strokeColor="var(--acid)" fillColor="var(--acid)" strokeWidth={1.25} drawDuration={1.15} fillDelay={0.08} stagger={0.035} ease="power2.out" trigger="mount" fillMode="fade" fontSize={128} fontWeight={900} letterSpacing={-9} />}</strong></h1>
+          <h1><span>HI! IM OSCAR CHANG</span><strong>{introFinished && <Suspense fallback={null}><StrokeText key="hero-stroke-ready" className="hero-stroke-text" text="LETS BUILD A PLAYABLE WORLD" strokeColor="var(--acid)" fillColor="var(--acid)" strokeWidth={1.25} drawDuration={1.15} fillDelay={0.08} stagger={0.035} ease="power2.out" trigger="mount" fillMode="fade" fontSize={128} fontWeight={900} letterSpacing={-9} /></Suspense>}</strong></h1>
           <p className="hero-statement">GAME PLANNING / ANALYSIS / 3D ART</p>
           <a href="#about" className="hero-scroll">SCROLL TO DISCOVER <b>↓</b></a>
         </div>
@@ -361,25 +418,28 @@ export default function Home() {
       <section className="work section" id="work">
         <div className="shell"><header className="section-head"><p>{copy.workLabel}</p><span>{copy.workMeta}</span></header><h2 className="display-title"><em>3D</em> {copy.workTitle}</h2></div>
         <div className="gallery-wrap">
-          <div className="gallery-hint shell"><span>{copy.drag}</span><b>← &nbsp; →</b></div>
-          <div className="project-gallery" ref={galleryRef} role="region" aria-label="Horizontal gallery of 3D projects" tabIndex={0}
+          <div className="gallery-hint shell"><span>{copy.drag}</span><span className="gallery-controls"><button type="button" onClick={() => moveGalleryByCard(-1)} aria-label="Previous 3D project">←</button><button type="button" onClick={() => moveGalleryByCard(1)} aria-label="Next 3D project">→</button></span></div>
+          <div className="project-gallery" ref={galleryRef} role="region" aria-label="Horizontal gallery of 3D projects" tabIndex={0} onScroll={updateGalleryExplore}
             onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} onPointerLeave={endDrag}>
             <div className="gallery-track">
               {projects.map((project) => (
                 <article className="gallery-card" key={project.index}>
                   <div className="gallery-image">{"video" in project ? <video className="gallery-video" src={project.video} muted loop playsInline preload="none" aria-label={`${project.title} project video`} /> : <img src={project.image} alt={`${project.title} project artwork`} loading="lazy" decoding="async" draggable="false" />}<span>{project.index}</span><small>{copy.projectType}</small></div>
-                  <h3>{project.title.replace("\n", " ")}</h3>
+                  <div className="gallery-card-footer">
+                    <h3>{project.title.replace("\n", " ")}</h3>
+                  </div>
                 </article>
               ))}
             </div>
           </div>
+          <a className={`gallery-explore-overlay${showGalleryExplore ? " is-visible" : ""}`} href="https://www.instagram.com/otis3dart?igsh=MTRibDU2Z3BqaWhseQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">EXPLORE MORE <b>→</b></a>
         </div>
       </section>
 
       <section className="toileport section" id="toileport" ref={toileportSectionRef}>
         <div className="shell"><header className="section-head"><p>{copy.animationLabel}</p><span>{copy.animationMeta}</span></header></div>
         <article className="toileport-feature">
-          <video ref={toileportVideoRef} src="/toileport-optimized.mp4" muted playsInline preload="metadata" aria-label="Toileport 2D animation film" />
+          <video ref={toileportVideoRef} src="/toileport-optimized.mp4" muted playsInline preload="none" aria-label="Toileport 2D animation film" />
           <div className="toileport-shade" />
           <div className="toileport-copy"><span>01</span><i /><h2>TOILEPORT</h2><p>{copy.film}</p><a href="https://youtu.be/ZTf7t5y_5bo?si=DvWE90i77SPdCHfP" target="_blank" rel="noopener noreferrer">{copy.watch} <b>→</b></a></div>
           <div className="toileport-label">2D ANIMATION / VISUAL STORYTELLING</div>
@@ -396,8 +456,8 @@ export default function Home() {
             <a className="contact-detail" href="mailto:oscarmamba8@gmail.com">
               <small>GMAIL</small><strong>oscarmamba8@gmail.com</strong><span>↗</span>
             </a>
-            <a className="contact-detail" href="tel:01058749381">
-              <small>PHONE</small><strong>010-58749381</strong><span>↗</span>
+            <a className="contact-detail" href="tel:+821058749381">
+              <small>PHONE</small><strong>(KR) +82-010-5874-9381</strong><span>↗</span>
             </a>
           </div>
           <div className="footer-line"><span>PORTFOLIO / 2026</span><div><a href="#top">BACK TO TOP ↑</a></div><span>TAIPEI, TAIWAN</span></div>
