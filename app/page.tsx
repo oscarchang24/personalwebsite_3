@@ -346,7 +346,7 @@ export default function Home() {
     <main className={`lang-${language}${introFinished ? " intro-complete" : ""}`}>
       {!introFinished && <div className="opening-panel" aria-hidden="true">
         <span className="opening-meta opening-meta-left">OSCAR CHANG / PORTFOLIO</span>
-        <span className="opening-meta opening-meta-right">GAME DESIGN / 3D / AI</span>
+        <span className="opening-meta opening-meta-right">GAME PLANNING / ANALYSIS / 3D ART</span>
         <div className="opening-beam"><i /><i /><i /></div>
         <div className="opening-slit" />
       </div>}
