@@ -2,6 +2,12 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 const StrokeText = lazy(() => import("./StrokeText"));
 
+const researchPaperUrls = [
+  "https://hanyang.dcollection.net/public_resource/pdf/200001009462_20260923193656.pdf",
+  "https://drive.google.com/file/d/1p_PgpxKmFWN0veuMh5HJpU_1Ra1lww86/view?usp=sharing",
+  "https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12502883",
+] as const;
+
 const projects = [
   {
     index: "01",
@@ -43,7 +49,7 @@ const projects = [
 const localized = {
   en: {
     researchLabel:"01 / RESEARCH", studies:"MASTER'S STUDIES · THREE PAPERS", researchMeta:"MASTER'S RESEARCH / 03 PAPERS", researchTitle:["RESEARCH","THROUGH PLAY."],
-    researchIntro:"Centered on game design, player experience, and visual storytelling, each study turns research into clear, testable design insights.",
+    researchIntro:"Centered on game design, player experience, and visual storytelling, each study turns research into clear, testable design insights.", researchAction:"VIEW PAPER",
     papers:[
       {title:["NARRATIVE FUNCTION OF","BOSS BATTLE"], body:"Using Elden Ring boss encounters as case studies, this research examines the relationship between combat design, reward systems, and narrative structure."},
       {title:["PLAYER EXPERIENCE","ANALYSIS"], body:"Beginning with online systems and player behavior, this study examines how asynchronous interactions connect players across different spaces and sustain a positive cycle of mutual support."},
@@ -56,7 +62,7 @@ const localized = {
   },
   zh: {
     researchLabel:"01 / 研究", studies:"碩士研究 · 三篇論文", researchMeta:"碩士研究 / 03 篇論文", researchTitle:["透過遊戲","進行研究。"],
-    researchIntro:"以遊戲設計、玩家體驗與視覺敘事為核心，將研究轉化為清晰且可驗證的設計觀點。",
+    researchIntro:"以遊戲設計、玩家體驗與視覺敘事為核心，將研究轉化為清晰且可驗證的設計觀點。", researchAction:"查看論文",
     papers:[
       {title:["頭目戰的","敘事功能"], body:"以《Elden Ring》的頭目戰為案例，探討戰鬥設計、獎賞系統與故事結構之間的關係。"},
       {title:["玩家體驗","分析"], body:"從連線機制與玩家行為切入，分析非同步互動如何連結身處不同空間的玩家，並形成持續回饋的善意循環。"},
@@ -69,7 +75,7 @@ const localized = {
   },
   ko: {
     researchLabel:"01 / 연구", studies:"석사 연구 · 논문 3편", researchMeta:"석사 연구 / 논문 03편", researchTitle:["플레이를 통한","연구."],
-    researchIntro:"게임 디자인, 플레이어 경험, 비주얼 스토리텔링을 중심으로 연구를 명확하고 검증 가능한 디자인 관점으로 전환합니다.",
+    researchIntro:"게임 디자인, 플레이어 경험, 비주얼 스토리텔링을 중심으로 연구를 명확하고 검증 가능한 디자인 관점으로 전환합니다.", researchAction:"논문 보기",
     papers:[
       {title:["보스전의","서사적 기능"], body:"Elden Ring의 보스전을 사례로 삼아 전투 디자인, 보상 시스템, 서사 구조 사이의 관계를 분석합니다."},
       {title:["플레이어 경험","분석"], body:"온라인 시스템과 플레이어 행동을 바탕으로, 비동기 상호작용이 서로 다른 공간의 플레이어를 연결하고 선의의 순환을 지속시키는 방식을 연구합니다."},
@@ -382,7 +388,7 @@ export default function Home() {
         <header className="section-head"><p>{copy.researchLabel}</p><span>{copy.studies}</span></header>
         <div className="research-intro"><p>{copy.researchMeta}</p><h2>{copy.researchTitle[0]}<br /><em>{copy.researchTitle[1]}</em></h2><span>{copy.researchIntro}</span></div>
         <div className="research-grid">
-          {copy.papers.map((paper,index) => <article key={paper.title.join("-")}><span>0{index+1}</span><h3>{paper.title[0]}<br />{paper.title[1]}</h3><p>{paper.body}</p><small>{index===0 ? "GAME DESIGN / PLAYER EXPERIENCE" : index===1 ? "UX RESEARCH / SYSTEM ANALYSIS" : "VISUAL DESIGN / STORYTELLING"}</small></article>)}
+          {copy.papers.map((paper,index) => <article key={paper.title.join("-")}><span>0{index+1}</span><h3>{paper.title[0]}<br />{paper.title[1]}</h3><p>{paper.body}</p><small>{index===0 ? "GAME DESIGN / PLAYER EXPERIENCE" : index===1 ? "UX RESEARCH / SYSTEM ANALYSIS" : "VISUAL DESIGN / STORYTELLING"}</small><a className="research-paper-link" href={researchPaperUrls[index]} target="_blank" rel="noopener noreferrer">{copy.researchAction} <b>→</b></a></article>)}
         </div>
         <div className="about-grid legacy-profile">
           <div className="portrait" role="img" aria-label="Portrait placeholder"><div className="portrait-mark">DESIGN<br />BEYOND<br />SURFACES.</div><span>PORTRAIT / 001</span></div>
