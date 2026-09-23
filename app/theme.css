@@ -1,6 +1,6 @@
 :root{--ink:#050506;--paper:#f3f3ef;--line:rgba(255,255,255,.13)}
 html,body,main{background:#050506;color:var(--paper)}
-.about,.capabilities,.toileport{background:#07090a}
+.about,.godrick,.capabilities,.toileport{background:#07090a}
 .work{background:#080a0b;color:var(--paper)}
 .work .section-head{border-color:var(--line);color:#c9cbc7}.work .section-head span{color:#717570}
 .work .display-title{color:#f3f3ef}.work .display-title em{color:var(--acid)}

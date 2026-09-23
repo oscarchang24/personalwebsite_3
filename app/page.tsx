@@ -49,8 +49,10 @@ const localized = {
       {title:["PLAYER EXPERIENCE","ANALYSIS"], body:"Beginning with online systems and player behavior, this study examines how asynchronous interactions connect players across different spaces and sustain a positive cycle of mutual support."},
       {title:["FRAGMENTED","STORYTELLING"], body:"This research explores how characters, environments, and cinematic language communicate a world, then translates those visual storytelling insights into practical creative methods."}
     ],
-    workLabel:"02 / 3D WORK", workMeta:"CHARACTER · ENVIRONMENT · EXPLORATION", workTitle:"PROJECT.", drag:"DRAG TO EXPLORE", projectType:"3D PROJECT",
-    animationLabel:"03 / 2D ANIMATION", animationMeta:"GRADUATION FILM · TOILEPORT", film:"A 2D animated film built around an original world and character-driven narrative. From concept and art direction to cinematic pacing, it explores the emotional transformation of a character moving through an unknown space.", watch:"WATCH THE FULL FILM"
+    godrickLabel:"02 / REVERSE DESIGN", godrickMeta:"BOSS ENCOUNTER · SYSTEM BREAKDOWN", godrickTitle:"GODRICK BOSS BATTLE",
+    godrickBody:"This reverse design document examines Godrick the Grafted's visual concept, two-phase combat logic, arena design, behavior tree, and individual skills through careful observation of 56 attack events. The findings show that some Phase 2 fire-enhanced attacks change the spectacle more than they change players' re-engagement decisions. In response, the document proposes two redesigns that extend spatial pressure while preserving clearly readable safe routes and punish windows.",
+    workLabel:"03 / 3D WORK", workMeta:"CHARACTER · ENVIRONMENT · EXPLORATION", workTitle:"PROJECT.", drag:"DRAG TO EXPLORE", projectType:"3D PROJECT",
+    animationLabel:"04 / 2D ANIMATION", animationMeta:"GRADUATION FILM · TOILEPORT", film:"A 2D animated film built around an original world and character-driven narrative. From concept and art direction to cinematic pacing, it explores the emotional transformation of a character moving through an unknown space.", watch:"WATCH THE FULL FILM"
   },
   zh: {
     researchLabel:"01 / 研究", studies:"碩士研究 · 三篇論文", researchMeta:"碩士研究 / 03 篇論文", researchTitle:["透過遊戲","進行研究。"],
@@ -60,8 +62,10 @@ const localized = {
       {title:["玩家體驗","分析"], body:"從連線機制與玩家行為切入，分析非同步互動如何連結身處不同空間的玩家，並形成持續回饋的善意循環。"},
       {title:["碎片化","敘事"], body:"研究角色、場景與影像語言如何共同傳達世界觀，並將視覺敘事洞察轉化為實際創作方法。"}
     ],
-    workLabel:"02 / 3D 作品", workMeta:"角色 · 場景 · 視覺探索", workTitle:"專案。", drag:"拖曳探索", projectType:"3D 專案",
-    animationLabel:"03 / 2D 動畫", animationMeta:"畢業製作 · TOILEPORT", film:"一部以原創世界觀與角色敘事為核心的 2D 動畫。從概念發展、美術指導到影像節奏，描繪角色穿越未知空間時的情緒轉變。", watch:"觀看完整影片"
+    godrickLabel:"02 / 逆企畫書", godrickMeta:"頭目戰 · 系統拆解", godrickTitle:"葛瑞克頭目戰",
+    godrickBody:"本逆企畫書從視覺概念、雙階段戰鬥邏輯、場地設計、行為樹與個別招式等面向，系統性拆解「接肢」葛瑞克頭目戰，並仔細觀察 56 次攻擊事件。結果顯示，第二階段部分火焰強化招式雖提升了視覺張力，卻未明顯改變玩家重新接近與反擊的決策。因此，企畫書提出兩項改善方案，在保留清晰安全路徑與反擊窗口的前提下，延長招式對戰場空間的影響。",
+    workLabel:"03 / 3D 作品", workMeta:"角色 · 場景 · 視覺探索", workTitle:"專案。", drag:"拖曳探索", projectType:"3D 專案",
+    animationLabel:"04 / 2D 動畫", animationMeta:"畢業製作 · TOILEPORT", film:"一部以原創世界觀與角色敘事為核心的 2D 動畫。從概念發展、美術指導到影像節奏，描繪角色穿越未知空間時的情緒轉變。", watch:"觀看完整影片"
   },
   ko: {
     researchLabel:"01 / 연구", studies:"석사 연구 · 논문 3편", researchMeta:"석사 연구 / 논문 03편", researchTitle:["플레이를 통한","연구."],
@@ -71,8 +75,10 @@ const localized = {
       {title:["플레이어 경험","분석"], body:"온라인 시스템과 플레이어 행동을 바탕으로, 비동기 상호작용이 서로 다른 공간의 플레이어를 연결하고 선의의 순환을 지속시키는 방식을 연구합니다."},
       {title:["파편화된","스토리텔링"], body:"캐릭터, 환경, 영상 언어가 세계관을 전달하는 방식을 연구하고 그 통찰을 실제 창작 방법으로 발전시킵니다."}
     ],
-    workLabel:"02 / 3D 작업", workMeta:"캐릭터 · 환경 · 비주얼 탐구", workTitle:"프로젝트.", drag:"드래그하여 탐색", projectType:"3D 프로젝트",
-    animationLabel:"03 / 2D 애니메이션", animationMeta:"졸업 작품 · TOILEPORT", film:"독창적인 세계관과 캐릭터 중심의 서사를 담은 2D 애니메이션입니다. 콘셉트와 아트 디렉션부터 영상의 리듬까지, 미지의 공간을 통과하는 캐릭터의 감정 변화를 탐구합니다.", watch:"전체 영상 보기"
+    godrickLabel:"02 / 역기획서", godrickMeta:"보스 전투 · 시스템 분석", godrickTitle:"고드릭 보스전",
+    godrickBody:"이 역기획서는 접목의 고드릭 보스전을 시각적 콘셉트, 2페이즈 전투 로직, 전장 설계, 행동 트리와 개별 스킬의 관점에서 체계적으로 분석하고, 56개의 공격 이벤트를 자세히 관찰합니다. 분석 결과, 2페이즈의 일부 화염 강화 공격은 시각적 연출을 강화하지만 플레이어의 재접근 및 반격 판단에는 충분한 변화를 만들지 못했습니다. 이에 명확한 안전 경로와 반격 기회를 유지하면서도 공간 압박을 지속시키는 두 가지 개선안을 제안합니다.",
+    workLabel:"03 / 3D 작업", workMeta:"캐릭터 · 환경 · 비주얼 탐구", workTitle:"프로젝트.", drag:"드래그하여 탐색", projectType:"3D 프로젝트",
+    animationLabel:"04 / 2D 애니메이션", animationMeta:"졸업 작품 · TOILEPORT", film:"독창적인 세계관과 캐릭터 중심의 서사를 담은 2D 애니메이션입니다. 콘셉트와 아트 디렉션부터 영상의 리듬까지, 미지의 공간을 통과하는 캐릭터의 감정 변화를 탐구합니다.", watch:"전체 영상 보기"
   }
 } as const;
 
@@ -132,11 +138,11 @@ export default function Home() {
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("#about, #work, #toileport, #contact"));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("#about, #godrick, #work, #toileport, #contact"));
     const targets: HTMLElement[] = [];
     const selector = [
       ".section-head", ".research-intro > p", ".research-intro h2", ".research-intro > span",
-      ".research-grid article", ".display-title", ".gallery-hint", ".gallery-card", ".toileport-feature",
+      ".research-grid article", ".godrick-feature", ".godrick-copy > span", ".godrick-copy h2", ".godrick-copy p", ".godrick-download", ".display-title", ".gallery-hint", ".gallery-card", ".toileport-feature",
       ".toileport-copy > span", ".toileport-copy h2", ".toileport-copy p", ".toileport-copy a", ".toileport-label",
       ".contact .eyebrow", ".contact h2", ".contact-actions > a"
     ].join(",");
@@ -147,7 +153,7 @@ export default function Home() {
         element.classList.add(`motion-section-${section.id}`);
         if (element.matches("h2, .display-title")) element.classList.add("motion-title");
         else if (element.matches(".research-grid article, .gallery-card")) element.classList.add("motion-card");
-        else if (element.matches(".toileport-feature")) element.classList.add("motion-panel");
+        else if (element.matches(".godrick-feature, .toileport-feature")) element.classList.add("motion-panel");
         else element.classList.add("motion-copy");
         element.style.setProperty("--motion-delay", `${Math.min(index * 65, 390)}ms`);
         targets.push(element);
@@ -352,7 +358,7 @@ export default function Home() {
       </div>}
       <nav className={`floating-nav${navFloating ? " is-visible" : ""}`} aria-hidden={!navFloating}>
         <a className="brand" href="#top">OSCAR CHANG</a>
-        <div className="hero-nav-links"><a href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
+        <div className="hero-nav-links"><a href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#godrick">REVERSE DESIGN</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
         {languageSwitch()}
       </nav>
       <section className="hero" id="top">
@@ -362,7 +368,7 @@ export default function Home() {
         <div className="hero-noise" />
         <nav className="nav hero-shell">
           <a className="brand" href="#top">OSCAR CHANG</a>
-          <div className="hero-nav-links"><a className="active" href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
+          <div className="hero-nav-links"><a className="active" href="#top">HOME</a><a href="#about">RESEARCH</a><a href="#godrick">REVERSE DESIGN</a><a href="#work">3D WORK</a><a href="#toileport">ANIMATION</a><a href="#contact">CONTACT</a></div>
           {languageSwitch()}
         </nav>
         <div className="hero-content hero-shell">
@@ -393,6 +399,16 @@ export default function Home() {
             <div className="tools"><span>SELECTED TOOLS</span><p>ZBRUSH · BLENDER · SUBSTANCE 3D PAINTER · UNREAL ENGINE</p></div>
           </div>
         </div>
+      </section>
+
+      <section className="godrick section" id="godrick">
+        <div className="shell"><header className="section-head"><p>{copy.godrickLabel}</p><span>{copy.godrickMeta}</span></header></div>
+        <article className="godrick-feature">
+          <img src="/godrick-boss-battle.png" alt="Godrick the Grafted boss battle reverse design study" loading="lazy" decoding="async" />
+          <div className="godrick-shade" />
+          <div className="godrick-copy"><span>01</span><i /><h2>{copy.godrickTitle}</h2><p>{copy.godrickBody}</p><a className="godrick-download" href="https://drive.google.com/file/d/1DsNIEbZngF5RZKRvwLxIUzHe8d6rJ1NI/view?usp=sharing" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE <b>→</b></a></div>
+          <div className="godrick-label">REVERSE DESIGN / BOSS ENCOUNTER ANALYSIS</div>
+        </article>
       </section>
 
       <section className="work section" id="work">
