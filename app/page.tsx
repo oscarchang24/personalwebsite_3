@@ -3,7 +3,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 const StrokeText = lazy(() => import("./StrokeText"));
 
 const researchPaperUrls = [
-  "https://hanyang.dcollection.net/public_resource/pdf/200001009462_20260923193656.pdf",
+  "https://lib.hanyang.ac.kr/search/i-discovery/23345971?type=biblios-list-view",
   "https://drive.google.com/file/d/1p_PgpxKmFWN0veuMh5HJpU_1Ra1lww86/view?usp=sharing",
   "https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12502883",
 ] as const;
@@ -412,7 +412,7 @@ export default function Home() {
         <article className="godrick-feature">
           <img src="/godrick-boss-battle.png" alt="Godrick the Grafted boss battle reverse design study" loading="lazy" decoding="async" />
           <div className="godrick-shade" />
-          <div className="godrick-copy"><span>01</span><i /><h2>{copy.godrickTitle}</h2><p>{copy.godrickBody}</p><a className="godrick-download" href="https://drive.google.com/file/d/1DsNIEbZngF5RZKRvwLxIUzHe8d6rJ1NI/view?usp=sharing" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE <b>→</b></a></div>
+          <div className="godrick-copy"><span>01</span><i /><h2>{copy.godrickTitle}</h2><p>{copy.godrickBody}</p><a className="godrick-download" href="https://drive.google.com/file/d/1DsNIEbZngF5RZKRvwLxIUzHe8d6rJ1NI/view?usp=sharing" target="_blank" rel="noopener noreferrer">VIEW PROJECT <b>→</b></a></div>
           <div className="godrick-label">REVERSE DESIGN / BOSS ENCOUNTER ANALYSIS</div>
         </article>
       </section>
